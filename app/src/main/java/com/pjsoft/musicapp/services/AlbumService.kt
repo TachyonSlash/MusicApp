@@ -9,6 +9,6 @@ interface AlbumService {
     suspend fun getAllAlbums() : List<Album>
 
     @GET("albums/{id}")
-    suspend fun getAlbumById(@retrofit2.http.Path("id") id: Int) : Album
+    suspend fun getAlbumById(@retrofit2.http.Path("id") id: String) : Album
 
 }

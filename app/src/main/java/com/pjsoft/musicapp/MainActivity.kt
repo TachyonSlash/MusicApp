@@ -11,6 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.pjsoft.musicapp.screens.AlbumDetailScreenRoute
+import com.pjsoft.musicapp.screens.DetailScreen
+import com.pjsoft.musicapp.screens.HomeScreen
+import com.pjsoft.musicapp.screens.HomeScreenRoute
 import com.pjsoft.musicapp.ui.theme.MusicAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,14 +27,24 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MusicAppTheme {
+                val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
+                    NavHost(navController = navController, startDestination = HomeScreenRoute) {
+                        composable<HomeScreenRoute> {
+                            HomeScreen(
+                                navController = navController,
+                            )
+                        }
+                        composable<AlbumDetailScreenRoute> { backEntry ->
+                            val args = backEntry.toRoute<AlbumDetailScreenRoute>()
+                            AlbumDetailScreenRoute(args.id)
+                        }
+                    }
                 }
             }
         }
     }
 }
-
 
 
 @Preview(showBackground = true)

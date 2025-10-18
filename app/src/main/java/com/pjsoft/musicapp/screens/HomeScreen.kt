@@ -34,18 +34,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pjsoft.musicapp.components.AlbumCard
+import com.pjsoft.musicapp.components.RecentlyPlayedCard
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation.NavController
+import com.pjsoft.musicapp.components.AlbumCard
 import com.pjsoft.musicapp.services.AlbumService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.pjsoft.musicapp.screens.AlbumDetailScreenRoute
 
 @Composable
-fun HomeScreen(){
+fun HomeScreen(navController: NavController){
     val BASE_URL = "https://music.juanfrausto.com/api/"
      var albums by remember { mutableStateOf(listOf<Album>()) }
      var loading by remember { mutableStateOf(true) }
@@ -75,86 +78,128 @@ fun HomeScreen(){
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text("Cargando álbumes...", modifier = Modifier.padding(16.dp))
             CircularProgressIndicator()
         }
     }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(top = 15.dp)
-    ) {
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth(0.90f)
-                .height(150.dp)
-                .align(Alignment.CenterHorizontally)
-                .background(
-                    color = Color(0xFF9B6EF3),
-                    shape = RoundedCornerShape(32.dp)
-                )
-                .border(
-                    width = 2.dp,
-                    color = Color.White,
-                    shape = RoundedCornerShape(32.dp)
-                )
-                .padding(16.dp),
-            contentAlignment = Alignment.TopStart
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(top = 15.dp)
         ) {
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = "Menu",
-                        tint = Color.White
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.90f)
+                    .height(150.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .background(
+                        color = Color(0xFF9B6EF3),
+                        shape = RoundedCornerShape(32.dp)
                     )
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Buscar",
-                        tint = Color.White
+                    .border(
+                        width = 2.dp,
+                        color = Color.White,
+                        shape = RoundedCornerShape(32.dp)
+                    )
+                    .padding(16.dp),
+                contentAlignment = Alignment.TopStart
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu",
+                            tint = Color.White
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Buscar",
+                            tint = Color.White
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = "Good Morning!",
+                        color = Color.White,
+                        fontSize = 16.sp
+                    )
+                    Text(
+                        text = "Héctor Adrián",
+                        color = Color.White,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    text = "Good Morning!",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
-                Text(
-                    text = "Héctor Adrián",
-                    color = Color.White,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Albums",
+                    modifier = Modifier
+                        .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black)
+                Text("See more",
+                    modifier = Modifier
+                        .padding(start = 20.dp, top = 20.dp, bottom = 8.dp, end = 16.dp),
+                    fontSize = 16.sp,
+                    color = Color(0xFF9B6EF3)
                 )
             }
-        }
-
-        LazyRow {
-
-        }
-
-        LazyColumn {
-                items(albums){album ->
+            LazyRow {
+                items(albums) { album ->
                     AlbumCard(
                         album = album,
-                        onClick = { }
+                        onClick = { navController.navigate(AlbumDetailScreenRoute(album.id)) }
                     )
 
                 }
+            }
+
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Recently Played",
+                    modifier = Modifier
+                        .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black)
+                Text("See more",
+                    modifier = Modifier
+                        .padding(start = 20.dp, top = 20.dp, bottom = 8.dp, end = 16.dp),
+                    fontSize = 16.sp,
+                    color = Color(0xFF9B6EF3)
+                )
+            }
+
+            LazyColumn {
+                items(albums) { album ->
+                    RecentlyPlayedCard(
+                        album = album,
+                        onClick = { navController.navigate(AlbumDetailScreenRoute(album.id)) }
+                    )
+
+                }
+            }
+
         }
 
-    }
 
 }
 
-@Preview
-@Composable
-fun HomeScreenPreview(){
-    HomeScreen()
-}
+//@Preview
+//@Composable
+//fun HomeScreenPreview(){
+//    val navController = rememberNavController()
+//    HomeScreen(navController)
+//}
