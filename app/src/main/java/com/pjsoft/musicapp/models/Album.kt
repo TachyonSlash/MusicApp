@@ -5,7 +5,7 @@ data class Album(
     val artist : String,
     val description : String,
     val image : String,
-    val id : Int
+    val id : String
 )
 
 
