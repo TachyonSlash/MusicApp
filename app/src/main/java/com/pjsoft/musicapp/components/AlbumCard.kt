@@ -38,7 +38,7 @@ fun AlbumCard(
     Box(
         modifier = Modifier
             .width(200.dp)
-            .height(220.dp)
+            .height(200.dp)
             .padding(8.dp)
             .clip(RoundedCornerShape(32.dp))
             .clickable{ onClick() }

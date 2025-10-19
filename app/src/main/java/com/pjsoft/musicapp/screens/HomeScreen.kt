@@ -1,6 +1,7 @@
 package com.pjsoft.musicapp.screens
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,9 +39,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pjsoft.musicapp.components.RecentlyPlayedCard
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil3.compose.rememberAsyncImagePainter
 import com.pjsoft.musicapp.components.AlbumCard
 import com.pjsoft.musicapp.services.AlbumService
 import kotlinx.coroutines.Dispatchers
@@ -46,12 +55,13 @@ import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.pjsoft.musicapp.screens.AlbumDetailScreenRoute
+import androidx.compose.ui.graphics.Brush
 
 @Composable
-fun HomeScreen(navController: NavController){
+fun HomeScreen(navController: NavController) {
     val BASE_URL = "https://music.juanfrausto.com/api/"
-     var albums by remember { mutableStateOf(listOf<Album>()) }
-     var loading by remember { mutableStateOf(true) }
+    var albums by remember { mutableStateOf(listOf<Album>()) }
+    var loading by remember { mutableStateOf(true) }
 
     LaunchedEffect(true) {
         try {
@@ -81,125 +91,185 @@ fun HomeScreen(navController: NavController){
             CircularProgressIndicator()
         }
     }
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(top = 15.dp)
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(top = 15.dp)
+                .fillMaxWidth(0.90f)
+                .height(150.dp)
+                .align(Alignment.CenterHorizontally)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF9B6EF3),
+                            Color(0xFF6A1B9A)
+                        )
+                    ),
+                    shape = RoundedCornerShape(32.dp)
+                )
+                .border(
+                    width = 2.dp,
+                    color = Color.White,
+                    shape = RoundedCornerShape(32.dp)
+                )
+                .padding(16.dp),
+            contentAlignment = Alignment.TopStart
         ) {
-            Box(
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Menu",
+                        tint = Color.White
+                    )
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Buscar",
+                        tint = Color.White
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "Good Morning!",
+                    color = Color.White,
+                    fontSize = 16.sp
+                )
+                Text(
+                    text = "Héctor Adrián",
+                    color = Color.White,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                "Albums",
                 modifier = Modifier
-                    .fillMaxWidth(0.90f)
-                    .height(150.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .background(
-                        color = Color(0xFF9B6EF3),
-                        shape = RoundedCornerShape(32.dp)
-                    )
-                    .border(
-                        width = 2.dp,
-                        color = Color.White,
-                        shape = RoundedCornerShape(32.dp)
-                    )
-                    .padding(16.dp),
-                contentAlignment = Alignment.TopStart
-            ) {
-                Column {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Top
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
-                            tint = Color.White
-                        )
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Buscar",
-                            tint = Color.White
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text(
-                        text = "Good Morning!",
-                        color = Color.White,
-                        fontSize = 16.sp
-                    )
-                    Text(
-                        text = "Héctor Adrián",
-                        color = Color.White,
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("Albums",
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black)
-                Text("See more",
-                    modifier = Modifier
-                        .padding(start = 20.dp, top = 20.dp, bottom = 8.dp, end = 16.dp),
-                    fontSize = 16.sp,
-                    color = Color(0xFF9B6EF3)
+                    .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+            Text(
+                "See more",
+                modifier = Modifier
+                    .padding(start = 20.dp, top = 20.dp, bottom = 8.dp, end = 16.dp),
+                fontSize = 16.sp,
+                color = Color(0xFF9B6EF3)
+            )
+        }
+        LazyRow {
+            items(albums) { album ->
+                AlbumCard(
+                    album = album,
+                    onClick = { navController.navigate(AlbumDetailScreenRoute(album.id)) }
                 )
+
             }
-            LazyRow {
-                items(albums) { album ->
-                    AlbumCard(
-                        album = album,
-                        onClick = { navController.navigate(AlbumDetailScreenRoute(album.id)) }
-                    )
-
-                }
-            }
-
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("Recently Played",
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black)
-                Text("See more",
-                    modifier = Modifier
-                        .padding(start = 20.dp, top = 20.dp, bottom = 8.dp, end = 16.dp),
-                    fontSize = 16.sp,
-                    color = Color(0xFF9B6EF3)
-                )
-            }
-
-            LazyColumn {
-                items(albums) { album ->
-                    RecentlyPlayedCard(
-                        album = album,
-                        onClick = { navController.navigate(AlbumDetailScreenRoute(album.id)) }
-                    )
-
-                }
-            }
-
         }
 
 
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                "Recently Played",
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+            Text(
+                "See more",
+                modifier = Modifier
+                    .padding(start = 20.dp, top = 20.dp, bottom = 8.dp, end = 16.dp),
+                fontSize = 16.sp,
+                color = Color(0xFF9B6EF3)
+            )
+        }
+
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+        ) {
+            items(albums) { album ->
+                RecentlyPlayedCard(
+                    album = album,
+                    onClick = { navController.navigate(AlbumDetailScreenRoute(album.id)) }
+                )
+
+            }
+        }
+        Box(
+            modifier = Modifier
+                .padding(bottom = 24.dp)
+                .padding(12.dp)
+                .fillMaxWidth()
+                .height(64.dp)
+                .background(Color(0xFF9B6EF3), RoundedCornerShape(24.dp)),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                val album = albums.firstOrNull()
+                if (album != null) {
+                    Image(
+                        painter = rememberAsyncImagePainter(album.image),
+                        contentDescription = album.title,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = album.title,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = album.artist,
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
+                    }
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = "Play",
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
+        }
+
+    }
+
 }
 
-//@Preview
-//@Composable
-//fun HomeScreenPreview(){
-//    val navController = rememberNavController()
-//    HomeScreen(navController)
-//}
+
+@Preview
+@Composable
+fun HomeScreenPreview(){
+    val navController = rememberNavController()
+    HomeScreen(navController)
+}

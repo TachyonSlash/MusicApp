@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<AlbumDetailScreenRoute> { backEntry ->
                             val args = backEntry.toRoute<AlbumDetailScreenRoute>()
-                            AlbumDetailScreenRoute(args.id)
+                            DetailScreen(args.id, navController)
                         }
                     }
                 }
